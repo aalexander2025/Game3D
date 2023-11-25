@@ -45,6 +45,8 @@ public class Main implements Runnable {
 
     public GameObject[] obj = new GameObject[18];
 
+    //ok
+
     public Light[] light = new Light[5];
 
     public Camera cam = new Camera(new Vector3f(1, 0, 1), new Vector3f(0, 0, 0));
