@@ -53,6 +53,7 @@ public class Renderer {
         shader.setUni("obj", Matrix4f.transform(obj.getPosition(), obj.getRotation(), obj.getScale()));
         shader.setUni("view", Matrix4f.view(cam.position, cam.rotation));
         shader.setUni("proj", window.projection);
+        shader.setUni("testColor", obj.getMesh().testColor);
 
         shader.setUni("SIZE", light.length);
         shader.setUni("lightPos", lpos);

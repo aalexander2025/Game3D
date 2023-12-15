@@ -39,11 +39,13 @@ public class Main implements Runnable {
     public Thread game;
     public Window window;
     public Renderer renderer;
+    public Renderer lRender;
     //A default Shader
     public Shader shader;
+    public Shader lshade;
     public int scl = 10;
 
-    public GameObject[] obj = new GameObject[18];
+    public GameObject[] obj = new GameObject[22];
 
     //ok
 
@@ -60,7 +62,12 @@ public class Main implements Runnable {
     public void init() {
         window = new Window(1000, 750, "test");
         shader = new Shader("resources/Shaders/MainVertex.glsl", "resources/Shaders/MainFragment.glsl");
+
+        lshade = new Shader("resources/Shaders/LightVertex.glsl", "resources/Shaders/LightFragment.glsl");
+
+
         renderer = new Renderer(window, shader);
+        lRender = new Renderer(window, lshade);
         float a = 5;
         obj[6] = new GameObject(new Material("/Textures/64x64/GRASS64x64.png"), new Vector3f(0, 0.45f, 0), new Vector3f(0, 0, 0), new Vector3f(40.0f, 0.1f, 10.0f), 0.5f);
         obj[0] = new GameObject(new Material("/Textures/64x64/BRICK64x64.png"), new Vector3f(0, 1.00001f + a / 2, 5), new Vector3f(0, 0, 0), new Vector3f(40, a + 1, 0.1f), 0.75f);
@@ -87,16 +94,27 @@ public class Main implements Runnable {
         obj[17] = new GameObject(new Material("/Textures/64x64/CONCRETE64x64.png"), new Vector3f(-13, 1.35f, 0), new Vector3f(0, 0, 0), new Vector3f(1.0f, 1.0f, 1.0f), 2.0f );
 
 
-        light[0] = new Light(new Vector3f(3, 1, 3), new Vector3f(1.0f, 1.0f, 1.0f), 10.0f);
-        light[1] = new Light(new Vector3f(-3, 1, -3), new Vector3f(1.0f, 0.0f, 0.0f), 40.0f);
-        light[2] = new Light(new Vector3f(3, 1, -3), new Vector3f(0.0f, 1.0f, 0.0f), 20.0f);
-        light[3] = new Light(new Vector3f(-3, 1, 3), new Vector3f(0.0f, 0.0f, 1.0f), 40.0f);
 
-        light[4] = new Light(new Vector3f(0, 10, -20), new Vector3f(1.0f, 0.6f, 0.0f), 200.0f);
+        obj[18] = new GameObject(new Vector3f(1, 1, 1), new Vector3f(3, 1, 3), new Vector3f(0, 0, 0), new Vector3f(0.4f, 0.4f, 0.4f), 2.0f );
+        obj[19] = new GameObject(new Vector3f(0, 0, 1), new Vector3f(-3, 1, 3), new Vector3f(0, 0, 0), new Vector3f(0.4f, 0.4f, 0.4f), 2.0f );
+        obj[20] = new GameObject(new Vector3f(0, 1, 0), new Vector3f(3, 1, -3), new Vector3f(0, 0, 0), new Vector3f(0.4f, 0.4f, 0.4f), 2.0f );
+        obj[21] = new GameObject(new Vector3f(1, 0, 0), new Vector3f(-3, 1, -3), new Vector3f(0, 0, 0), new Vector3f(0.4f, 0.4f, 0.4f), 2.0f );
 
 
+
+
+        light[0] = new Light(new Vector3f(3, 1, 3), new Vector3f(1.0f, 1.0f, 1.0f), 8.0f);
+        light[1] = new Light(new Vector3f(-3, 1, -3), new Vector3f(1.0f, 0.0f, 0.0f), 16.0f);
+        light[2] = new Light(new Vector3f(3, 1, -3), new Vector3f(0.0f, 1.0f, 0.0f), 16.0f);
+        light[3] = new Light(new Vector3f(-3, 1, 3), new Vector3f(0.0f, 0.0f, 1.0f), 16.0f);
+
+        light[4] = new Light(new Vector3f(0, 10, -20), new Vector3f(1.0f, 0.6f, 0.0f), 80.0f);
+
+
+        //window.background(135f/255f, 206f/255f, 235f/255f);
         window.background(0.0f, 0.0f, 0.0f);
         //window.background(0.4f, 0.5f, 0.6f);
+        //135, 206, 235
         window.create();
         for (int i = 0; i < obj.length; i++) {
             obj[i].getMesh().create();
@@ -105,6 +123,7 @@ public class Main implements Runnable {
         }
 
         shader.create();
+        lshade.create();
 
 
     }
@@ -129,6 +148,7 @@ public class Main implements Runnable {
         }
 
         shader.destroy();
+        lshade.destroy();
     }
 
     //updates our window and all other functions that need to be constantly updated
@@ -155,6 +175,15 @@ public class Main implements Runnable {
         obj[8].setScale(new Vector3f(cam.bounds.x * 2, obj[8].getPosition().y, cam.bounds.z * 2));
        // obj[4].setRotation(new Vector3f(0.0f, (float)Math.toDegrees(Math.atan2(dir.z, dir.x)), 0.0f));
 
+        light[0].pos.x += Math.sin(GLFW.glfwGetTime() * 10f)/10f;
+        light[1].pos.x += Math.sin(GLFW.glfwGetTime() * 10f + 10f)/10f;
+        light[2].pos.x += Math.sin(GLFW.glfwGetTime() * 10f + 20f)/10f;
+        light[3].pos.x += Math.sin(GLFW.glfwGetTime() * 10f + 30f)/10f;
+        obj[18].setPosition(light[0].pos);
+        obj[21].setPosition(light[1].pos);
+        obj[20].setPosition(light[2].pos);
+        obj[19].setPosition(light[3].pos);
+
 
         if (Input.isMouseDown(GLFW.GLFW_MOUSE_BUTTON_1)) {
             window.mouseState(true);
@@ -171,9 +200,17 @@ public class Main implements Runnable {
 
 //        }
 
-        for (int i = 0; i < obj.length; i++) {
-            renderer.renderMesh(obj[i], cam, light);
+        for (int i = 0; i < obj.length ; i++) {
+            if(i < obj.length - 4){
+                renderer.renderMesh(obj[i], cam, light);
+            }
+            else{
+                lRender.renderMesh(obj[i], cam,  light);
+            }
+
         }
+
+
 
         window.swapBuffers();
     }

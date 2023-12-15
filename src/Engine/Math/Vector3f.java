@@ -67,7 +67,7 @@ public class Vector3f {
     }
 
     public static float length(Vector3f a, Vector3f b){
-        return a.x * b.x + a.y * b.y + a.z * b.z;
+        return (float) Math.sqrt(a.x * b.x + a.y * b.y + a.z * b.z);
     }
 
     //cx = aybz − azby

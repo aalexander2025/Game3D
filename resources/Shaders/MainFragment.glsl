@@ -5,6 +5,7 @@ const int MAX_L = 50;
 in vec4 frag_color;
 in vec2 passText;
 in vec3 norm;
+uniform vec3 testColor;
 in vec4 oPosition;
 
 
@@ -64,43 +65,16 @@ void main() {
 		vec3 lDir = normalize(lightPos[i] - vec3(oPosition));
 		float diff = max(dot(Norm, lDir), 0.0f);
 		float dist = length(vec3(oPosition) - lightPos[i]);
-		diffuse += vec3(min(lightData[i].x/(dist*dist), 1.0f)) * (diff * lightColor[i]);
+		diffuse += vec3((lightData[i].x/(dist*dist)) * (diff * lightColor[i]));
 	}
-
-
-
-
-
-
-
-//	vec3 lDir2 = normalize(light2 - vec3(oPosition));
-//	float diff2 = max(dot(Norm, lDir2), 0.0f);
-//	float dist2 = length(vec3(oPosition) - light2);
-//	vec3 diffuse2 = vec3(min(20.0f/(dist2*dist2), 1.0f)) * (diff2 * vec3(1.0f, 0.0f, 0.0f));
-//
-//	vec3 lDir3 = normalize(light3 - vec3(oPosition));
-//	float diff3 = max(dot(Norm, lDir3), 0.0f);
-//	float dist3 = length(vec3(oPosition) - light3);
-//	vec3 diffuse3 = vec3(min(20.0f/(dist3*dist3), 1.0f)) * (diff3 * vec3(0.0f, 1.0f, 0.0f));
-//
-//	vec3 lDir4 = normalize(light4 - vec3(oPosition));
-//	float diff4 = max(dot(Norm, lDir4), 0.0f);
-//	float dist4 = length(vec3(oPosition) - light4);
-//	vec3 diffuse4 = vec3(min(20.0f/(dist4*dist4), 1.0f)) * (diff4 * vec3(0.0f, 0.0f, 1.0f));
-
-
-
-
 
 	vec4 normColor = texture(text1, passText);
 
-	outColor =    mapColor(vec3(normColor  )) * (vec4((min(diffuse, vec3(1.0f))) + vec3(0.7f), 1.0f)) ;
-	//  * vec4((diffuse) + vec3(0.3f), 1.0f);
-	//outColor = texture(text1, passText) * vec4((diffuse) + vec3(0.3f), 1.0f)  ;
+	vec4 D = (vec4((min(diffuse, vec3(1.0f))) + vec3(0.5f), 1.0f));
+
+	vec4 Color = mapColor(min(vec3(normColor * D), 1.0f));
 
 
-
-
-
-	//outColor = vec4(1, 0, 0, 1) * vec4((diffuse + vec3(0.5f)), 1.0f);
+	float gamma = 1.0f;
+	outColor = vec4(pow(vec3(Color), vec3(1.0f/gamma)), 1.0f) * vec4(testColor, 1.0f);
 }

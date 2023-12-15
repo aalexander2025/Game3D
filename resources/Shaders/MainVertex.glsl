@@ -9,6 +9,7 @@ out vec4 frag_color;
 out vec2 passText;
 out vec3 norm;
 out vec4 oPosition;
+out vec3 testColor;
 
 
 
@@ -30,6 +31,8 @@ void main() {
 
 
 
+
+	testColor = color;
 
 
 	norm = mat3(transpose(inverse(obj))) * (normal);

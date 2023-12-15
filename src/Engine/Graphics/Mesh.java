@@ -15,14 +15,27 @@ import java.nio.IntBuffer;
 public class Mesh {
     private Vertex[] vertices;
     private Vector3f[] normals;
+    public Vector3f color = new Vector3f(1.0f);
     private int[] indices;
     private int VAO, IBO, VBO, CBO, TBO, NBO;
     private Material material;
+    public Vector3f testColor = new Vector3f(1.0f);
 
     public Mesh(Vertex[] verts, int[] ins, Material material){
         vertices = verts;
         indices = ins;
         this.material = material;
+        normals = new Vector3f[vertices.length * 3];
+
+
+
+    }
+
+    public Mesh(Vertex[] verts, int[] ins, Vector3f c){
+        vertices = verts;
+        indices = ins;
+        color = c;
+        this.material = new Material("/Textures/CKER.png");
         normals = new Vector3f[vertices.length * 3];
 
     }
@@ -31,6 +44,8 @@ public class Mesh {
         material.create();
         VAO = GL30.glGenVertexArrays();
         GL30.glBindVertexArray(VAO);
+
+
         /////
         //VBO
         FloatBuffer vertexBuffer = MemoryUtil.memAllocFloat(vertices.length * 3);
@@ -47,12 +62,14 @@ public class Mesh {
         FloatBuffer colorBuffer = MemoryUtil.memAllocFloat(vertices.length * 3);
         float[] colorData = new float[vertices.length * 3];
         for(int i = 0; i < vertices.length; i++){
-            colorData[i * 3] = vertices[i].color.x;
-            colorData[(i * 3) + 1] = vertices[i].color.y;
-            colorData[(i * 3) + 2] = vertices[i].color.z;
+
+            colorData[i * 3] = color.x;
+            colorData[(i * 3) + 1] = color.y;
+            colorData[(i * 3) + 2] = color.z;
         }
         colorBuffer.put(colorData).flip();
         CBO = storeData(colorBuffer, 1, 3);
+
 
         //texture
         FloatBuffer textureBuffer = MemoryUtil.memAllocFloat(vertices.length * 2);
@@ -161,6 +178,9 @@ public class Mesh {
     }
 
 
+    public void callColorBuffer(){
+
+    }
 
     public int[] getIndices() {
         return indices;

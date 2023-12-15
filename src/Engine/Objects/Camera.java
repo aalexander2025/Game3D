@@ -12,7 +12,7 @@ import org.lwjglx.test.spaceinvaders.Game;
 
 public class Camera {
     public Vector3f position, rotation;
-    public float speed = 9.0f;
+    public float speed = 5.0f;
     public float side = 0.3f;
     float mult = 1.0f;
     public Vector3f bounds = new Vector3f(0.2f, 1.0f, 0.2f);
@@ -75,6 +75,10 @@ public class Camera {
 
 //      position = Vector3f.add(position, Vector3f.mult(vel, new Vector3f(deltaTime)));
 
+
+        for (GameObject o : obj) {
+            collides(o);
+        }
 
         if (position.y < 1) {
             position.y = 1;
@@ -202,6 +206,14 @@ public class Camera {
     }
 
     public void collides(GameObject o) {
+
+        for(int i = 0; i < o.getMesh().getVertices().length; i++){
+            Vector3f vPos = Vector3f.add(o.getMesh().getVertices()[i].pos, o.getPosition());
+           
+        }
+
+
+
 
 
     }
